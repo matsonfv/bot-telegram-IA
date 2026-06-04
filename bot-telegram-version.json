@@ -1,0 +1,1892 @@
+{
+  "name": "bot-telegram-version",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "*",
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -912,
+        864
+      ],
+      "id": "f2b21f26-9157-451e-a46b-e6baa7353e6e",
+      "name": "Telegram Trigger",
+      "webhookId": "76a4d089-9476-4495-979a-459cf024a6e2",
+      "credentials": {
+        "telegramApi": {
+          "id": "T6VkhruwXFiUkTN8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.first();\nconst chatId = item.json.message?.chat?.id;\nconst voice = item.json.message?.voice;\nconst workflow = $getWorkflowStaticData('global');\n\n// Detecta mensagem de voz\nif (voice) {\n  item.json._tipo = 'voice';\n  return [item];\n}\n\n// Injeta estado salvo, se existir\nif (chatId && workflow[chatId]) {\n  item.json._estado = workflow[chatId];\n}\n\nreturn [item];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -688,
+        864
+      ],
+      "id": "da11b7a4-678d-4179-997a-020ecc01a2a7",
+      "name": "Code: Verificar Estado"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/start",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "rule-start"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Menu"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/criardoc",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "rule-criardoc"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Salvar text doc"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json._estado }}",
+                    "rightValue": "aguardando_texto_doc",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "rule-estado-doc"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Doc texto"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "9436a329-18c1-4d70-b3ac-1cb830a3a337",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/docimagem",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Salvar texto"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f3f30f3e-9be9-49ab-a5e3-dc219aa5b844",
+                    "leftValue": "={{ $json._estado }}",
+                    "rightValue": "doc2_texto",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Captura imagem"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "409a1616-fc29-4836-b6b9-f8af99f34574",
+                    "leftValue": "={{ $json._estado }}",
+                    "rightValue": "doc2_imagem",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Doc texto/imagem"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/noticias",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "rule-noticias"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Noticias"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json._tipo }}",
+                    "rightValue": "voice",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "rule-voice"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Transcrever áudio"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -464,
+        752
+      ],
+      "id": "417e7e76-6c5e-495e-9c81-66c76ae3fd44",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Salva o estado e guarda o texto atual para usar depois\nconst chatId = $input.first().json.message.chat.id;\nconst workflow = $getWorkflowStaticData('global');\nworkflow[chatId] = 'aguardando_texto_doc';\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        192
+      ],
+      "id": "fa7d93b0-505d-495a-8d8d-13118088444b",
+      "name": "Code: Salvar Estado Doc"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "📝 Ok! Digite o texto que deseja inserir no documento:",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        288,
+        192
+      ],
+      "id": "1c6c2ddb-ac0d-43f0-803e-b00b6b8ecb95",
+      "name": "Pedir Texto do Documento",
+      "webhookId": "25851954-6641-4c66-bb12-d21b5fc2cdda",
+      "credentials": {
+        "telegramApi": {
+          "id": "T6VkhruwXFiUkTN8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Limpa estado e salva o texto do usuário para usar no Update\nconst item = $input.first();\nconst chatId = item.json.message.chat.id;\nconst texto = item.json.message.text;\nconst workflow = $getWorkflowStaticData('global');\ndelete workflow[chatId];\n\n// Injeta o texto no item para os próximos nós usarem\nitem.json._texto_doc = texto;\nreturn [item];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        480
+      ],
+      "id": "458e869e-cbe4-4d33-ad2f-1813df1666e1",
+      "name": "Code: Limpar Estado"
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1SlVXyyaQPkpsFGkWqw3PZJ7CgicvXVqb7m8zAR9XDiw"
+        },
+        "name": "=Documento_{{ $now.format('dd-MM-yyyy_HH-mm') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        288,
+        576
+      ],
+      "id": "da78efa3-3bdd-450b-8cdf-b30dd558e7fa",
+      "name": "Copy file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "CXumtVWgkwHvMAMq",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $('Copy file').item.json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "replaceAll",
+              "text": "{{TEXTO}}",
+              "replaceText": "={{ $('Code: Limpar Estado').item.json._texto_doc }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        512,
+        576
+      ],
+      "id": "6d934598-a8c2-4817-945d-a58aae73a23d",
+      "name": "Update a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "4vUg0YfsHvALurpo",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://docs.google.com/document/d/{{ $('Copy file').item.json.id }}/export?format=pdf",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDocsOAuth2Api",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        736,
+        576
+      ],
+      "id": "2fb4e2de-9edf-45df-aa5f-0e15b9a3dcd4",
+      "name": "HTTP Request: Exportar PDF",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "4vUg0YfsHvALurpo",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "share",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Copy file').item.json.id }}",
+          "mode": "id"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "anyone"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        960,
+        480
+      ],
+      "id": "4281e927-52a9-4dbe-9fcf-209221a9f9fc",
+      "name": "Share file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "CXumtVWgkwHvMAMq",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=🔗 Link público:\n<a href=\"https://drive.google.com/file/d/{{ $('Copy file').item.json.id }}/view\">Clique aqui para abrir o documento</a>",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1184,
+        480
+      ],
+      "id": "1f82d03d-42a0-4e99-8dab-c74f6202be3d",
+      "name": "Enviar Link Público",
+      "webhookId": "bd7abd7c-c2aa-4cb2-9bf6-9e0324bb96b0",
+      "credentials": {
+        "telegramApi": {
+          "id": "T6VkhruwXFiUkTN8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://g1.globo.com/rss/g1/mundo/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        0,
+        1248
+      ],
+      "id": "c9b09382-59c0-4da2-a1c8-1046068c6ae7",
+      "name": "HTTP: Buscar RSS G1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        288,
+        1248
+      ],
+      "id": "e2130e45-3a23-4adf-b278-72e98ee59f92",
+      "name": "XML: Parse RSS"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\n\n// $input.first() já é o primeiro elemento, não precisa de [0]\nconst items = data?.rss?.channel?.item || [];\n\nlet mensagem = '📰 *Notícias do G1 - Mundo:*\\n\\n';\n\nconst total = Math.min(8, items.length);\n\nfor (let i = 0; i < total; i++) {\n  const titulo = (items[i]?.title || 'Sem título').toString().trim();\n  const link   = (items[i]?.link  || 'https://g1.globo.com').toString().trim();\n  mensagem += `${i + 1}. [${titulo}](${link})\\n\\n`;\n}\n\nif (total === 0) {\n  mensagem = '⚠️ Não foi possível carregar as notícias agora.';\n}\n\nreturn [{ json: { texto: mensagem } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        512,
+        1248
+      ],
+      "id": "25c349da-cf33-41a5-ab34-ef439ebbf0cf",
+      "name": "Code: Formatar Notícias"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.texto }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        736,
+        1248
+      ],
+      "id": "fc2415a6-21fc-440c-a153-9b0e0554064e",
+      "name": "Enviar Notícias",
+      "webhookId": "g1-webhook-00000004",
+      "credentials": {
+        "telegramApi": {
+          "id": "T6VkhruwXFiUkTN8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/file/bot8200559546:AAHTp4fB3mu3q8Kw9ges7Irdp8lNN6xzahQ/{{ $json.result.file_path }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        288,
+        1536
+      ],
+      "id": "53e24d14-a974-4001-9fa2-278b2957b23c",
+      "name": "HTTP: Download Audio",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "dtFjMjeJYwhOZrQE",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=🎙️ *Transcrição do seu áudio:*\n\n{{ $json.texto }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1856,
+        1536
+      ],
+      "id": "714299bd-554b-4277-a803-f9fda92de269",
+      "name": "Enviar Transcrição",
+      "webhookId": "aud-webhook-00000005",
+      "credentials": {
+        "telegramApi": {
+          "id": "T6VkhruwXFiUkTN8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "=👋 Olá, *{{ $json.message.from.first_name }}*! Seja bem-vindo!\n\nEscolha uma opção:\n\n📝 /criardoc — Criar documento com texto (papel timbrado)\n\n📄 /docimagem — Criar documento com texto/imagem\n\n📰 /noticias — Ver notícias do G1\n\n🎙️ Ou... apenas envie um *áudio* que iremos *transcrevê-lo* 😎\n\nVocê também pode me fazer qualquer pergunta! 🤖",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4a1d36e6-35f2-474c-ba87-3f32d46f9fcb",
+      "name": "Enviar Menu",
+      "webhookId": "90af9ae0-a98b-4cc0-96b1-38d68ac5bd68",
+      "credentials": {
+        "telegramApi": {
+          "id": "T6VkhruwXFiUkTN8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.gladia.io/v2/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "audio",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        512,
+        1536
+      ],
+      "id": "1012df1c-9ba9-4e6f-b2fa-f83d3a56a01c",
+      "name": "Gladia: Upload Audio",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "dtFjMjeJYwhOZrQE",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.gladia.io/v2/transcription",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"audio_url\": \"{{ $json.audio_url }}\",\n  \"language_config\": {\n    \"languages\": [\"pt\"],\n    \"code_switching\": false\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        736,
+        1536
+      ],
+      "id": "891a9b62-22da-4cf0-ad32-619e746fe5e9",
+      "name": "Gladia: Transcrição",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "dtFjMjeJYwhOZrQE",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.gladia.io/v2/transcription/{{ $('Gladia: Transcrição').item.json.id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1184,
+        1472
+      ],
+      "id": "f3d10995-b4de-46c6-ab98-f640cd595820",
+      "name": "Gladia: Buscar Resultado",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "dtFjMjeJYwhOZrQE",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\n\n// Tenta pegar o texto transcrito em diferentes caminhos da resposta\nconst texto =\n  data?.result?.transcription?.full_transcript ||\n  data?.result?.transcription?.utterances?.map(u => u.text).join(' ') ||\n  'Não foi possível transcrever o áudio.';\n\nreturn [{ json: { texto } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1632,
+        1536
+      ],
+      "id": "c361ba7b-6243-4ac3-a3a5-babf99ea30d4",
+      "name": "Code: Extrair Texto"
+    },
+    {
+      "parameters": {
+        "amount": 3
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        960,
+        1536
+      ],
+      "id": "16fb561c-349d-4eae-a134-4d654d23b570",
+      "name": "Wait",
+      "webhookId": "1946dd05-6f6c-4227-90d2-55801bc67131"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "5768dd48-a18e-45a8-b51d-1d56a6dd7e36",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "done",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1408,
+        1536
+      ],
+      "id": "2120552b-6313-4b17-800b-106fdc8a37a4",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=⏳ Gerando o documento... ",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        288,
+        384
+      ],
+      "id": "60cdacd9-7bbf-4b4b-ab32-cb924213506c",
+      "name": "Gerando o documento",
+      "webhookId": "bd7abd7c-c2aa-4cb2-9bf6-9e0324bb96b0",
+      "credentials": {
+        "telegramApi": {
+          "id": "T6VkhruwXFiUkTN8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendDocument",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "binaryData": true,
+        "additionalFields": {
+          "caption": "✅ Documento criado com sucesso!"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        960,
+        672
+      ],
+      "id": "136cc20e-bd01-4b37-b7a4-3272405a356f",
+      "name": "Envia documento PDF",
+      "webhookId": "2e0a29c5-35d3-4718-968d-b22a4b985030",
+      "credentials": {
+        "telegramApi": {
+          "id": "T6VkhruwXFiUkTN8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        352,
+        1760
+      ],
+      "id": "22ed725e-6c92-4e1f-831f-806daa1c63e9",
+      "name": "Enviar Resposta IA",
+      "webhookId": "ai-resposta-webhook-0004",
+      "credentials": {
+        "telegramApi": {
+          "id": "T6VkhruwXFiUkTN8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        96,
+        1984
+      ],
+      "id": "61a02c12-3277-42e5-9494-7b1ce32a97de",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        1984
+      ],
+      "id": "6343df8f-fe3f-4a94-9759-25f0b82aadde",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "6rQsv5QQLMjpOSyi",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
+        "options": {
+          "systemMessage": "Você é um assistente inteligente integrado a um bot do Telegram. Responda SEMPRE em português brasileiro de forma clara, amigável e objetiva.\n\nVocê faz parte de um bot que possui as seguintes funcionalidades:\n\n📄 *CASO 1 — Criar Documento*\nComando: /criardoc\nO usuário envia o comando e o bot pede um texto. Após digitar o texto, o bot gera automaticamente um documento Google Docs com papel timbrado, exporta em PDF e envia o arquivo junto com um link público para download.\n\n🖼️ *CASO 2 — Documento com Texto/Imagem*\nComando: /docimagem\nPermite preencher um documento modelo com textos e imagens.\n\n📰 *CASO 3 — Notícias*\nComando: /noticias\nO bot busca as últimas notícias do mundo em tempo real e envia os títulos com links clicáveis diretamente no chat.\n\n🎙️ *CASO 4 — Transcrição de Áudio*\nBasta enviar um áudio no chat (sem precisar de comando). O bot transcreve automaticamente o áudio e devolve o texto na conversa.\n\nRegras importantes:\n- Se o usuário perguntar como usar o bot, explique os 4 casos acima de forma resumida.\n- Se o usuário quiser usar uma funcionalidade, oriente-o a digitar o comando correto ou enviar o áudio.\n- Para qualquer outra pergunta fora das funcionalidades do bot, responda normalmente como um assistente inteligente.\n- Nunca invente funcionalidades que não existem.\n- Seja sempre prestativo e incentive o usuário a explorar o bot."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        0,
+        1760
+      ],
+      "id": "d64235d9-d66f-4047-b1f2-3b0c6de657ac",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "url": "=https://docs.google.com/document/d/{{ $('Copy Template').item.json.id }}/export?format=pdf",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDocsOAuth2Api",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "arquivo_pdf"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2304,
+        1056
+      ],
+      "id": "011b900e-5c0f-4e0c-a3d9-e69bd0abf5c2",
+      "name": "HTTP Request: Exportar PDF1",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "4vUg0YfsHvALurpo",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "share",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Copy Template').item.json.id }}",
+          "mode": "id"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "anyone"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2528,
+        960
+      ],
+      "id": "9b94bda3-63bc-478f-9520-35eed3427ac3",
+      "name": "Share file1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "CXumtVWgkwHvMAMq",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=🔗 Link público:\n<a href=\"https://drive.google.com/file/d/{{ $('Copy Template').item.json.id }}/view\">Clique aqui para abrir o documento</a>",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2752,
+        960
+      ],
+      "id": "4f2c1196-56d4-4b70-9e43-a376369fac07",
+      "name": "Enviar Link Público1",
+      "webhookId": "bd7abd7c-c2aa-4cb2-9bf6-9e0324bb96b0",
+      "credentials": {
+        "telegramApi": {
+          "id": "T6VkhruwXFiUkTN8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendDocument",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "binaryData": true,
+        "binaryPropertyName": "arquivo_pdf",
+        "additionalFields": {
+          "caption": "✅ Documento criado com sucesso!"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2528,
+        1152
+      ],
+      "id": "dbac4085-21de-4315-bf76-c14ef5ae7df2",
+      "name": "Envia documento PDF1",
+      "webhookId": "2e0a29c5-35d3-4718-968d-b22a4b985030",
+      "credentials": {
+        "telegramApi": {
+          "id": "T6VkhruwXFiUkTN8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=⏳ Gerando doc com imagem... ",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        736,
+        864
+      ],
+      "id": "ca8d83e4-01e8-4ef7-a948-883b6f1f1e05",
+      "name": "Gerando doc com imagem",
+      "webhookId": "bd7abd7c-c2aa-4cb2-9bf6-9e0324bb96b0",
+      "credentials": {
+        "telegramApi": {
+          "id": "T6VkhruwXFiUkTN8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://docs.googleapis.com/v1/documents/{{ $('Copy Template').item.json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDocsOAuth2Api",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1632,
+        1056
+      ],
+      "id": "e539667d-ea81-4885-83fd-b40e5b73ea51",
+      "name": "HTTP Request: GET",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "4vUg0YfsHvALurpo",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://docs.googleapis.com/v1/documents/{{ $('Copy Template').item.json.id }}:batchUpdate",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDocsOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"requests\": [\n    {\n      \"insertInlineImage\": {\n        \"uri\": \"https://drive.google.com/uc?export=view&id={{ $json.fotoId }}\",\n        \"objectSize\": {\n          \"height\": { \"magnitude\": 200, \"unit\": \"PT\" },\n          \"width\": { \"magnitude\": 300, \"unit\": \"PT\" }\n        },\n        \"location\": {\n          \"index\": {{ $json.markerIndex }}\n        }\n      }\n    },\n    {\n      \"deleteContentRange\": {\n        \"range\": {\n          \"startIndex\": {{ $json.markerIndex + 1 }},\n          \"endIndex\": {{ $json.markerIndex + 1 + 10 }}\n        }\n      }\n    }\n  ]\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2080,
+        1056
+      ],
+      "id": "f1dab893-a02b-45f4-ac6a-ac73bef1927c",
+      "name": "HTTP Request: POST",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "4vUg0YfsHvALurpo",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json._next_question }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        288,
+        752
+      ],
+      "id": "c0ee1959-e2f1-4085-86c2-969d63fa818c",
+      "name": "Perguntar",
+      "webhookId": "05ea6178-8482-4bbf-b96e-e1ea647135a5",
+      "credentials": {
+        "telegramApi": {
+          "id": "T6VkhruwXFiUkTN8",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/bot8200559546:AAHTp4fB3mu3q8Kw9ges7Irdp8lNN6xzahQ/getFile",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "file_id",
+              "value": "={{ $json.file_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        288,
+        960
+      ],
+      "id": "5434904b-7106-4fcf-83d4-1ae5187a422a",
+      "name": "Get Foto Path"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/file/bot8200559546:AAHTp4fB3mu3q8Kw9ges7Irdp8lNN6xzahQ/{{ $json.result.file_path }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        512,
+        960
+      ],
+      "id": "d638dca7-db38-46bc-8cd9-13ef9564fe62",
+      "name": "Download Foto"
+    },
+    {
+      "parameters": {
+        "name": "=foto_doc_{{ $now.format('dd-MM-yyyy_HH-mm') }}.jpg",
+        "driveId": {
+          "__rl": true,
+          "value": "root",
+          "mode": "id"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "root"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        736,
+        1056
+      ],
+      "id": "88342ceb-77e0-40d4-9420-e006485e56bd",
+      "name": "Upload Foto",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "CXumtVWgkwHvMAMq",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "share",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "anyone"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        960,
+        1056
+      ],
+      "id": "7949437b-3079-4db5-9db7-05edca52e968",
+      "name": "Foto Pública",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "CXumtVWgkwHvMAMq",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1Lsin2zzWflY4gIfN05podB2roUQApggueQyeVl2wnuk",
+          "mode": "id"
+        },
+        "name": "=DocImagem_{{ $now.format('dd-MM-yyyy_HH-mm') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1184,
+        1056
+      ],
+      "id": "64c1cba1-d74b-4779-9a9f-25f95a05721c",
+      "name": "Copy Template",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "CXumtVWgkwHvMAMq",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $('Copy Template').item.json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "replaceAll",
+              "text": "{{TEXTO}}",
+              "replaceText": "={{ $('Code: Processar Foto').item.json.texto }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1408,
+        1056
+      ],
+      "id": "1b09701d-8533-404f-9ef5-4d439817beef",
+      "name": "Substituir Marcadores",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "4vUg0YfsHvALurpo",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Caso 1 - Criar documento",
+        "height": 80,
+        "width": 182,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -16,
+        352
+      ],
+      "typeVersion": 1,
+      "id": "de81c7c1-e13c-40a8-a947-48e76660be8a",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Caso 2 - Doc Texto/Imagem ",
+        "height": 80,
+        "width": 198,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -16,
+        880
+      ],
+      "typeVersion": 1,
+      "id": "618afa9f-bf63-4a4e-84ea-b89a53c2206c",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Caso 3 - Notícias G1",
+        "height": 80,
+        "width": 166,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -16,
+        1152
+      ],
+      "typeVersion": 1,
+      "id": "396d332e-5a34-4d69-ae87-c632aa0e7deb",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Caso 4 - Transcritor de áudio",
+        "height": 80,
+        "width": 262,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -16,
+        1440
+      ],
+      "typeVersion": 1,
+      "id": "2f60b5f3-5a54-4859-a4c2-fbfa48a8b353",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/bot8200559546:AAHTp4fB3mu3q8Kw9ges7Irdp8lNN6xzahQ/getFile",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "file_id",
+              "value": "={{ $('Telegram Trigger').item.json.message.voice.file_id }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        0,
+        1536
+      ],
+      "id": "c10a4ec1-41b2-4857-a0c3-fa62f0d065f1",
+      "name": "HTTP: Get File Path",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "dtFjMjeJYwhOZrQE",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Nó único que gerencia todos os passos de texto e imagem\nconst item = $input.first();\nconst chatId = item.json.message.chat.id;\nconst texto = item.json.message.text;\nconst estado = item.json._estado;\nconst workflow = $getWorkflowStaticData('global');\nconst dados = workflow[chatId + '_c2'] || {};\n\nlet next_state, next_question;\n\nif (texto === '/docimagem') {\n  // Início: limpa dados antigos e pede nome\n  workflow[chatId + '_c2'] = {};\n  next_state = 'doc2_texto';\n  next_question = '🖼️ *Documento com imagem*\\n\\nDigite o texto do documento:';\n} else if (estado === 'doc2_texto') {\n  dados.texto = texto;\n  next_state = 'doc2_imagem';\n  next_question = '✅ Texto salvo!\\n\\nAgora envie a *imagem* para o documento:';\n}\n\nworkflow[chatId + '_c2'] = dados;\nworkflow[chatId] = next_state;\nitem.json._next_question = next_question;\nreturn [item];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        752
+      ],
+      "id": "812f1005-c5c3-405f-9878-c1a33202a244",
+      "name": "Code: Coletar dados"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Recebe a foto, extrai file_id e recupera dados coletados\nconst item = $input.first();\nconst chatId = item.json.message.chat.id;\nconst workflow = $getWorkflowStaticData('global');\n\n// Aceita foto direta OU arquivo de imagem\nconst photos = item.json.message.photo;\nconst document = item.json.message.document;\n\nlet fileId;\n\nif (photos && photos.length > 0) {\n  // Enviado como foto — pega a maior resolução\n  fileId = photos[photos.length - 1].file_id;\n} else if (document && document.mime_type && document.mime_type.startsWith('image/')) {\n  // Enviado como arquivo de imagem\n  fileId = document.file_id;\n} else {\n  throw new Error('Nenhuma imagem encontrada. Envie uma foto ou imagem.');\n}\n\nconst dados = workflow[chatId + '_c2'] || {};\ndelete workflow[chatId];\ndelete workflow[chatId + '_c2'];\n\nreturn [{ json: { file_id: fileId, chatId, ...dados } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        960
+      ],
+      "id": "1f98d5b5-5dc6-4906-949b-59f3c1ca71eb",
+      "name": "Code: Processar Foto"
+    },
+    {
+      "parameters": {
+        "jsCode": "const doc = $input.first().json;\nconst content = doc.body.content;\n\nlet markerIndex = null;\n\nfor (const element of content) {\n  if (element.paragraph) {\n    for (const el of element.paragraph.elements) {\n      if (el.textRun && el.textRun.content.includes('{{IMAGEM}}')) {\n        markerIndex = el.startIndex;\n        break;\n      }\n    }\n  }\n  if (markerIndex !== null) break;\n}\n\nif (markerIndex === null) {\n  throw new Error('Marcador IMAGEM_URL não encontrado no documento.');\n}\n\nreturn [{ json: { \n  markerIndex,\n  docId: $('Copy Template').item.json.id,\n  fotoId: $('Upload Foto').item.json.id\n}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1856,
+        1056
+      ],
+      "id": "c90a04c4-49cf-45eb-84aa-1a82924827de",
+      "name": "Code: Search IMAGEM"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        240,
+        1981.276861076718
+      ],
+      "id": "7981d101-cbd6-4745-82d1-2292c4cbd514",
+      "name": "AI Agent1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code: Verificar Estado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Verificar Estado": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Enviar Menu",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code: Salvar Estado Doc",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code: Limpar Estado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code: Coletar dados",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code: Coletar dados",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code: Processar Foto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP: Buscar RSS G1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP: Get File Path",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Salvar Estado Doc": {
+      "main": [
+        [
+          {
+            "node": "Pedir Texto do Documento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Limpar Estado": {
+      "main": [
+        [
+          {
+            "node": "Copy file",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gerando o documento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy file": {
+      "main": [
+        [
+          {
+            "node": "Update a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a document": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request: Exportar PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request: Exportar PDF": {
+      "main": [
+        [
+          {
+            "node": "Share file",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Envia documento PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Share file": {
+      "main": [
+        [
+          {
+            "node": "Enviar Link Público",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Buscar RSS G1": {
+      "main": [
+        [
+          {
+            "node": "XML: Parse RSS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML: Parse RSS": {
+      "main": [
+        [
+          {
+            "node": "Code: Formatar Notícias",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Formatar Notícias": {
+      "main": [
+        [
+          {
+            "node": "Enviar Notícias",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Download Audio": {
+      "main": [
+        [
+          {
+            "node": "Gladia: Upload Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gladia: Upload Audio": {
+      "main": [
+        [
+          {
+            "node": "Gladia: Transcrição",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gladia: Transcrição": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gladia: Buscar Resultado": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Extrair Texto": {
+      "main": [
+        [
+          {
+            "node": "Enviar Transcrição",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Gladia: Buscar Resultado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code: Extrair Texto",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Enviar Resposta IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request: Exportar PDF1": {
+      "main": [
+        [
+          {
+            "node": "Share file1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Envia documento PDF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Share file1": {
+      "main": [
+        [
+          {
+            "node": "Enviar Link Público1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request: GET": {
+      "main": [
+        [
+          {
+            "node": "Code: Search IMAGEM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request: POST": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request: Exportar PDF1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Foto Path": {
+      "main": [
+        [
+          {
+            "node": "Download Foto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Foto": {
+      "main": [
+        [
+          {
+            "node": "Upload Foto",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gerando doc com imagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Foto": {
+      "main": [
+        [
+          {
+            "node": "Foto Pública",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Foto Pública": {
+      "main": [
+        [
+          {
+            "node": "Copy Template",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy Template": {
+      "main": [
+        [
+          {
+            "node": "Substituir Marcadores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Substituir Marcadores": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request: GET",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Get File Path": {
+      "main": [
+        [
+          {
+            "node": "HTTP: Download Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Coletar dados": {
+      "main": [
+        [
+          {
+            "node": "Perguntar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Processar Foto": {
+      "main": [
+        [
+          {
+            "node": "Get Foto Path",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Search IMAGEM": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request: POST",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "a726ee1b-f011-49b7-8a11-bf64f304555e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9dc20f6b9cf49031732431033cff9713c6a3ebb616be5dd0263221ab529e179f"
+  },
+  "id": "XYZ7NMY0GQxDupaE",
+  "tags": []
+}
